@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Hero from "@/components/Hero";
-import ListApartmentForm from "@/components/ListApartmentForm";
+
+import AvailableProperties from "@/components/AvailableProperties";
 
 export default function Home() {
   return (
     <div>
       <Hero/>
-     <ListApartmentForm/>
+    
+     <AvailableProperties/>
     </div>
   );
 }

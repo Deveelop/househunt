@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id               String  @id @default(uuid())
+  stateNig         String
+  address          String
+  description String  @default("No description provided")
+  houseType        String
+  price            Float
+  contact  Float
+  imageUrl         String
+}
+
+enum HouseType {
+  SINGLE_ROOM
+  SELF_CONTAINED
+  BEDROOM_AND_PALLOUR
+  MORE_THAN_ONE_BEDROOM_AND_PALLOUR
+}
