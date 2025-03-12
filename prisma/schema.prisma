@@ -17,10 +17,3 @@ model Property {
   contact  Float
   imageUrl         String
 }
-
-enum HouseType {
-  SINGLE_ROOM
-  SELF_CONTAINED
-  BEDROOM_AND_PALLOUR
-  MORE_THAN_ONE_BEDROOM_AND_PALLOUR
-}

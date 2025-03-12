@@ -7,6 +7,7 @@ interface Property {
   price: number;
   stateNig: string;
   address: string;
+  description: string;
   contact: number
   imageUrl: string;
 }
@@ -54,6 +55,7 @@ export default function AvailableProperties() {
               <h2 className="text-xl font-semibold mt-2">{house.houseType}</h2>
               <p className="text-gray-700">{house.stateNig}</p>
               <p className="text-gray-700">{house.address}</p>
+              <p className="text-gray-700">{house.description}</p>
               <p className="text-lg font-bold text-blue-600">₦{house.price.toLocaleString()}</p>
               <p className="text-gray-500">{house.contact.toLocaleString()}</p>
             </div>

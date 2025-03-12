@@ -1,89 +1,22 @@
 "use client"; 
 import { useState, useEffect } from "react";
+import StatesApi from "@/apiCalls/StatesApi";
 
 export default function Home() {
-  const [states, setStates] = useState<string[]>([]);
-  const [lgas, setLgas] = useState<string[]>([]);
-  const [loadingStates, setLoadingStates] = useState(true);
-  const [loadingLgas, setLoadingLgas] = useState(false);
+  const {fetchStates, fetchLgas, states, lgas, formData,loadingLgas, setFormData} = StatesApi()
   const [image, setImage] = useState<File | null>(null);
-  const [formData, setFormData] = useState({
-    price: "",
-    stateNig: "",
-    address: "",
-    houseType: "",
-    contact: "",
-  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   // Fetch states
   useEffect(() => {
-    const fetchStates = async () => {
-      console.log("Fetching states...");
-
-      try {
-        const response = await fetch("https://naija-places.toneflix.com.ng/api/v1/states", {
-          headers: { "X-Api-Key": "qqbJbHtTWuRBf9ib8rNs2LTLhjAC2gY2" },
-        });
-
-        console.log("State API Response:", response);
-
-        if (!response.ok) throw new Error(`Error fetching states: ${response.statusText}`);
-
-        const rawData = await response.json();
-    console.log("State Data:", rawData);
-
-  
-    const data = rawData as { data: { name: string }[] };
-
-    
-    setStates(data.data.map((item) => item.name));
-
-         console.log(states)
-      } catch (error) {
-        console.error("Error fetching states:", error);
-      } finally {
-        setLoadingStates(false);
-      }
-    };
-
     fetchStates();
   }, []);
 
   // Fetch LGAs when a state is selected
   useEffect(() => {
     if (!formData.stateNig) return;
-
-    const fetchLgas = async () => {
-      console.log(`Fetching LGAs for state: ${formData.stateNig}...`);
-      setLoadingLgas(true);
-
-      try {
-        const response = await fetch(`https://naija-places.toneflix.com.ng/api/v1/states/${formData.stateNig}/lgas`, {
-          headers: { "X-Api-Key": "qqbJbHtTWuRBf9ib8rNs2LTLhjAC2gY2" },
-        });
-
-        console.log("LGA API Response:", response);
-
-        if (!response.ok) throw new Error(`Error fetching LGAs: ${response.statusText}`);
-
-        const rawData = await response.json();
-    console.log("State LGA:", rawData);
-
-  
-    const data = rawData as { data: { name: string }[] };
-
-    
-    setLgas(data.data.map((item) => item.name));
-      } catch (error) {
-        console.error("Error fetching LGAs:", error);
-      } finally {
-        setLoadingLgas(false);
-      }
-    };
-
     fetchLgas();
   }, [formData.stateNig]);
 
@@ -135,6 +68,7 @@ export default function Home() {
         price: "",
         stateNig: "",
         address: "",
+        description: "",
         houseType: "",
         contact: "",
       });
@@ -174,14 +108,14 @@ export default function Home() {
           <div className=" grid grid-cols-3  gap-4 w-full text-black">
           <select name="houseType" value={formData.houseType} onChange={handleInputChange} className="border p-2 w-full" required>
         <option value="">Select House Type</option>
-        <option value="SINGLE_ROOM">Single Room</option>
-        <option value="SELF_CONTAINED">Self Contained</option>
-        <option value="BEDROOM_AND_PALLOUR">Bedroom and Parlour</option>
-        <option value="MORE_THAN_ONE_BEDROOM_AND_PALLOUR">More than One Bedroom and Parlour</option>
+        <option value="Single Room">Single Room</option>
+        <option value="Self Contained">Self Contained</option>
+        <option value="Bedroom and Parlour">Bedroom and Parlour</option>
+        <option value="More than One Bedroom and Parlour">More than One Bedroom and Parlour</option>
       </select>
           {/* State Selection */}
       <select name="stateNig" value={formData.stateNig} onChange={handleInputChange} className="border p-2 mt-2 w-full" required>
-        <option value="">{loadingStates ? "Loading states..." : "Select State"}</option>
+        <option value="">Select State</option>
         {states.map((state) => (
           <option key={state} value={state}>
             {state}
@@ -189,16 +123,17 @@ export default function Home() {
         ))}
       </select>
       <select name="address" value={formData.address} onChange={handleInputChange} className="border p-2 mt-2 w-full" required disabled={loadingLgas || !formData.stateNig}>
-        <option value="">{loadingLgas ? "Loading LGAs..." : "Select LGA"}</option>
+        <option value="">Select LGA</option>
         {lgas.map((lga) => (
           <option key={lga} value={lga}>
             {lga}
           </option>
         ))}
       </select>
-            <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleInputChange} className="border p-3 rounded-lg w-full" required />
+            <input type="text" name="description" placeholder="Enter description" value={formData.description} onChange={handleInputChange} className="border p-3 rounded-lg w-full" required />
+            <input type="number" name="price" placeholder="Enter price" value={formData.price} onChange={handleInputChange} className="border p-3 rounded-lg w-full" required />
             <input type="file" accept="image/*" onChange={handleFileChange} className="border p-3 rounded-lg w-full" required />
-            <input type="number" name="contact" placeholder="Contact Person" value={formData.contact} onChange={handleInputChange} className="border p-2 w-full" required />
+            <input type="number" name="contact" placeholder="Contact person phone" value={formData.contact} onChange={handleInputChange} className="border p-2 w-full" required />
       
           </div>
           <div className="flex flex-col items-center justify-center w-full">

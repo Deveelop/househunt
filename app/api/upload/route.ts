@@ -13,8 +13,9 @@ export async function POST(req: Request) {
     const address = formData.get("address") as string;
     const houseType = formData.get("houseType") as string;
     const contact = formData.get("contact") as string;
+    const description = formData.get("description") as string;
 
-    if (!file || !price || !stateNig || !address || !houseType || !contact) {
+    if (!file || !price || !stateNig || !address || !houseType || !contact || !description) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
               houseType,
               stateNig,
               address,
+              description,
               price: parseFloat(price),
               contact: parseFloat(contact),
               imageUrl: result?.secure_url || "",
