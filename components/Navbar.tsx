@@ -1,24 +1,18 @@
-
+import Link from "next/link"
+import Image from "next/image"
+import {FaBars} from "react-icons/fa"
 const Navbar = () => {
   return (
-    <header className="sticky top-0 bg-black text-white shadow z-50">
-    <div className="container flex flex-col sm:flex-row justify-between items-center mx-auto py-4 px-8">
-        <div className="flex items-center text-2xl">
+    <header className="sticky top-0 bg-white text-black shadow z-50">
+    <div className="container hidden sm:flex flex-col sm:flex-row justify-between items-center mx-auto py-4 px-8">
+        <Link href='/' className="flex items-center text-2xl">
             <div className="w-12 mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#BEE3F8" d="M44,7L4,23l40,16l-7-16L44,7z M36,23H17l18-7l1,6V23z"></path>
-                    <path fill="#3182CE"
-                        d="M40.212,10.669l-5.044,11.529L34.817,23l0.351,0.802l5.044,11.529L9.385,23L40.212,10.669 M44,7L4,23 l40,16l-7-16L44,7L44,7z">
-                    </path>
-                    <path fill="#3182CE"
-                        d="M36,22l-1-6l-18,7l17,7l-2-5l-8-2h12V22z M27.661,21l5.771-2.244L33.806,21H27.661z">
-                    </path>
-                </svg>
-            </div>House Hunt
-        </div>
+                <Image src="/logo.png" alt="logo" className=" w-[500px]" width={500} height={500}/>
+            </div>Houseek
+        </Link>
         <div className="flex mt-4 sm:mt-0">
             <a className="px-4" href="#features">Contact Us</a>
-            <a className="px-4" href="#services">Properties</a>
+            <Link className="px-4" href="/property">Properties</Link>
             <a className="px-4" href="#testimonials">About Us</a>
         </div>
         <div className="hidden md:block">
@@ -27,6 +21,9 @@ const Navbar = () => {
             </button>
         </div>
     </div>
+    <div className="sm:hidden items-center mx-auto py-4 px-8">
+     <FaBars className=" "/>
+     </div>
 </header>
   )
 }

@@ -7,13 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model SecureRequest {
+  id          String   @id @default(uuid())
+  userName    String
+  userEmail   String
+  propertyId  String   @unique
+  ipAddress   String
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  userContact Float
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
 model Property {
-  id               String  @id @default(uuid())
-  stateNig         String
-  address          String
-  description String  @default("No description provided")
-  houseType        String
-  price            Float
-  contact  Float
-  imageUrl         String
+  id            String         @id @default(uuid())
+  price         Float
+  imageUrl      String
+  address       String
+  houseType     String
+  stateNig      String
+  contact       Float
+  status        String         @default("Available")
+  description   String
+  secureRequest SecureRequest?
 }

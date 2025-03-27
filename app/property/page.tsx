@@ -46,18 +46,18 @@ export default function AvailableProperties() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {properties.map((house) => (
-            <div key={house.id} className="border p-4 rounded-lg shadow">
+            <div key={house.id} className="border p-4 rounded-lg shadow cursor-pointer">
               <img
                 src={house.imageUrl}
                 alt={house.houseType}
                 className="w-full h-40 object-cover rounded"
               />
               <h2 className="text-xl font-semibold mt-2">{house.houseType}</h2>
-              <p className="text-gray-700">{house.stateNig}</p>
-              <p className="text-gray-700">{house.address}</p>
-              <p className="text-gray-700">{house.description}</p>
+              <p className="text-gray-700">{house.description}, {house.address} {house.stateNig}.  </p>
+              <div className=" text-center">
               <p className="text-lg font-bold text-blue-600">₦{house.price.toLocaleString()}</p>
-              <p className="text-gray-500">{house.contact.toLocaleString()}</p>
+            
+            </div>
             </div>
           ))}
         </div>

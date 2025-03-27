@@ -1,11 +1,10 @@
-
-import { env } from "process";
 import { useEffect, useState } from "react";
 
 const StatesApi = () => {
     const [states, setStates] = useState<string[]>([]);
     const [lgas, setLgas] = useState<string[]>([]);
     const [loadingLgas, setLoadingLgas] = useState(false);
+    const [isError, setError] = useState('')
     
     const [formData, setFormData] = useState({
       price: "",
@@ -18,7 +17,6 @@ const StatesApi = () => {
  // Fetch states
  
     const fetchStates = async () => {
-      console.log("Fetching states...");
 
       try {
         const response = await fetch("https://naija-places.toneflix.com.ng/api/v1/states", {
@@ -28,14 +26,25 @@ const StatesApi = () => {
         console.log("State API Response:", response);
 
         if (!response.ok) throw new Error(`Error fetching states: ${response.statusText}`);
-
-        const rawData = await response.json();
+         let rawData;
+         try{
+           rawData = await response.json();
+         } catch(jsonError){
+          throw new Error("Invalid JSON response from the API")
+         }
     console.log("State Data:", rawData);
-    const data = rawData as { data: { name: string }[] };    
+    const data = rawData as { data: { name: string }[] };
+    if (!rawData || !rawData.data || !Array.isArray(rawData.data)){
+      throw new Error("Unexpected API response format")
+    }    
     setStates(data.data.map((item) => item.name));
-
+    setError('');
       } catch (error) {
-        console.error("Error fetching states:", error);
+       if(error instanceof TypeError && error.message.includes("fetch")){
+        setError("Internet connection error")
+       } else {
+        setError("An unknown error occured while fetching states")
+       }
       }
     };
 
@@ -75,7 +84,8 @@ const StatesApi = () => {
     formData,
     setFormData,
     loadingLgas,
-    fetchLgas
+    fetchLgas,
+    isError
   }
 }
 

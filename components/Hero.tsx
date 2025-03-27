@@ -1,26 +1,93 @@
 "use client"; 
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import StatesApi from "@/apiCalls/StatesApi";
+import {FaMapMarkerAlt} from "react-icons/fa"
+interface Property {
+  id: string;
+  houseType: string;
+  price: number;
+  stateNig: string;
+  address: string;
+  description: string;
+  contact: number
+  imageUrl: string;
+  lgas: string
+}
+
 
 export default function Home() {
-  const {fetchStates, fetchLgas, states, lgas, formData,loadingLgas, setFormData} = StatesApi()
+  const router = useRouter();
+  const {fetchStates, fetchLgas, states, lgas, formData,loadingLgas, setFormData, isError} = StatesApi()
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fetch states
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     fetchStates();
   }, []);
 
-  // Fetch LGAs when a state is selected
   useEffect(() => {
     if (!formData.stateNig) return;
     fetchLgas();
   }, [formData.stateNig]);
 
+  useEffect(() => {
+    async function fetchProperties() {
+      try {
+        const res = await fetch("/api/properties");
+        const data = await res.json();
+        setProperties(data);
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    }
+    fetchProperties();
+  }, []);
 
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    setTypingTimeout(
+      setTimeout(() => {
+        filterProperties(query);
+      }, 500)
+    );
+  };
+
+  const handleSearchClick = () => {
+    filterProperties(searchQuery);
+  };
+
+  const filterProperties = (query: string) => {
+    if (!query) {
+      setFilteredProperties([]);
+      return;
+    }
+  
+    const filtered = properties.filter((property) =>
+      [
+        property.houseType,
+        property.stateNig,
+        property.lgas,
+        property.address,
+        property.description,
+        property.contact
+      ]
+      .filter(field => field) // Remove null/undefined fields
+      .some(field => String(field).toLowerCase().includes(query))
+    );
+  
+    setFilteredProperties(filtered);
+  };
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -93,9 +160,44 @@ export default function Home() {
           <h1 className="text-3xl md:text-5xl font-bold">Find Your Dream Apartment</h1>
           <p className="mt-3 text-gray-300">Search available apartments with ease.</p>
           <form className="mt-5 flex gap-2 justify-center">
-            <input type="text" placeholder="Search by location" className="w-full max-w-md p-3 rounded-lg border shadow-md text-black" />
-            <button className="px-6 py-3 bg-teal-500 hover:bg-teal-600 rounded-lg text-white">Search</button>
+            <input 
+              type="text" 
+              placeholder="Search by house type or location" 
+              className="w-full max-w-md p-3 rounded-lg border shadow-md text-black" 
+              value={searchQuery} 
+              onChange={handleSearchInput}
+            />
+            <button  type="button"   onClick={handleSearchClick} className="px-6 py-3 bg-teal-500 hover:bg-teal-600 rounded-lg text-white">Search</button>
           </form>
+        </div>
+
+        <div className="max-w-4xl w-full bg-white p-6 shadow-lg rounded-lg text-black">
+        <h2 className="text-xl font-semibold mb-4">Available Apartments</h2>
+        <div >
+          {filteredProperties.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {filteredProperties.map((property) => (
+                <div  onClick={() => router.push(`/property/${property.id}`)} key={property.id} className="border p-4 rounded-lg shadow cursor-pointer">
+                  <img
+                src={property.imageUrl}
+                alt={property.houseType}
+                className="w-full h-40 object-cover rounded"
+              />
+              <h2 className="text-xl font-semibold mt-2">{property.houseType}</h2>
+              <div className=" flex items-center">
+              <FaMapMarkerAlt/>
+              <p className="text-gray-700">{property.description}, {property.address} {property.stateNig}</p>
+              </div>
+              <div className=" text-center">
+              <p className="text-lg font-bold text-blue-600">₦{property.price.toLocaleString()}</p>
+                 </div>
+                  </div>
+              ))}
+            </div>
+          ) : (
+            <p>No matching apartments found.</p>
+          )}
+          </div>
         </div>
 
         {/* Upload Form Section */}
@@ -115,7 +217,8 @@ export default function Home() {
       </select>
           {/* State Selection */}
       <select name="stateNig" value={formData.stateNig} onChange={handleInputChange} className="border p-2 mt-2 w-full" required>
-        <option value="">Select State</option>
+        <option value="">{isError ? isError : 'Select State'}</option>
+        
         {states.map((state) => (
           <option key={state} value={state}>
             {state}
