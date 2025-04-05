@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const StatesApi = () => {
     const [states, setStates] = useState<string[]>([]);
@@ -14,7 +14,7 @@ const StatesApi = () => {
       houseType: "",
       contact: "",
     });
- // Fetch states
+ 
  
     const fetchStates = async () => {
 

@@ -15,11 +15,10 @@ interface Property {
 export default function PropertyDetails() {
   const [property, setProperty] = useState<Property | null>(null);
   const router = useRouter();
-  const params = useParams(); // ✅ Fetch params correctly
-  const propertyId = params?.id as string | undefined; // ✅ Handle possible undefined value
-
+  const params = useParams();
+  const propertyId = params?.id as string | undefined; 
   useEffect(() => {
-    if (!propertyId) return; // Prevent fetch if no ID is available
+    if (!propertyId) return; 
 
     async function fetchProperty() {
       try {

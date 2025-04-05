@@ -19,11 +19,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    // Convert file to buffer
+    
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Upload to Cloudinary
+   
     return new Promise((resolve) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: "housesdb" },
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
             return;
           }
 
-          // Save to Database
+          
           const property = await prisma.property.create({
             data: {
               houseType,

@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import StatesApi from "@/apiCalls/StatesApi";
-import {FaMapMarkerAlt} from "react-icons/fa"
 interface Property {
   id: string;
   houseType: string;
@@ -10,7 +9,7 @@ interface Property {
   stateNig: string;
   address: string;
   description: string;
-  contact: number
+  contact: string
   imageUrl: string;
   lgas: string
 }
@@ -81,7 +80,7 @@ export default function Home() {
         property.description,
         property.contact
       ]
-      .filter(field => field) // Remove null/undefined fields
+      .filter(field => field) 
       .some(field => String(field).toLowerCase().includes(query))
     );
   
@@ -155,7 +154,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-black/60"></div>
 
       <div className="relative flex flex-col items-center text-center text-white space-y-8">
-        {/* Search Section */}
+       
         <div className="max-w-3xl w-full">
           <h1 className="text-3xl md:text-5xl font-bold">Find Your Dream Apartment</h1>
           <p className="mt-3 text-gray-300">Search available apartments with ease.</p>
@@ -183,14 +182,11 @@ export default function Home() {
                 alt={property.houseType}
                 className="w-full h-40 object-cover rounded"
               />
+              <div className=" mx-0">
               <h2 className="text-xl font-semibold mt-2">{property.houseType}</h2>
-              <div className=" flex items-center">
-              <FaMapMarkerAlt/>
               <p className="text-gray-700">{property.description}, {property.address} {property.stateNig}</p>
-              </div>
-              <div className=" text-center">
               <p className="text-lg font-bold text-blue-600">₦{property.price.toLocaleString()}</p>
-                 </div>
+                  </div>
                   </div>
               ))}
             </div>
@@ -200,7 +196,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Upload Form Section */}
+      
         <h1 className="text-3xl md:text-5xl font-bold">Upload Available Apartment</h1>
         <p className="mt-3 text-gray-300">Make someone's search easy today by uploading available apartment</p>
         <div className="items-center justify-center gap-10 mt-12 p-6 bg-white shadow-lg rounded-lg mx-auto">
@@ -215,7 +211,7 @@ export default function Home() {
         <option value="Bedroom and Parlour">Bedroom and Parlour</option>
         <option value="More than One Bedroom and Parlour">More than One Bedroom and Parlour</option>
       </select>
-          {/* State Selection */}
+          
       <select name="stateNig" value={formData.stateNig} onChange={handleInputChange} className="border p-2 mt-2 w-full" required>
         <option value="">{isError ? isError : 'Select State'}</option>
         
@@ -236,7 +232,7 @@ export default function Home() {
             <input type="text" name="description" placeholder="Enter description" value={formData.description} onChange={handleInputChange} className="border p-3 rounded-lg w-full" required />
             <input type="number" name="price" placeholder="Enter price" value={formData.price} onChange={handleInputChange} className="border p-3 rounded-lg w-full" required />
             <input type="file" accept="image/*" onChange={handleFileChange} className="border p-3 rounded-lg w-full" required />
-            <input type="number" name="contact" placeholder="Contact person phone" value={formData.contact} onChange={handleInputChange} className="border p-2 w-full" required />
+            <input type="tel" name="contact" placeholder="Contact person phone" value={formData.contact} onChange={handleInputChange} className="border p-2 w-full" required />
       
           </div>
           <div className="flex flex-col items-center justify-center w-full">

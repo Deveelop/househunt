@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     const requests = await prisma.secureRequest.findMany({
-      include: { property: true }, // Include property details
+      include: { property: true }, 
     });
 
     return NextResponse.json(requests);
@@ -16,19 +16,19 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { requestId, action } = await req.json(); // `action` will be "Accepted" or "Rejected"
+    const { requestId, action } = await req.json(); 
 
     if (!["Accepted", "Rejected"].includes(action)) {
       return NextResponse.json({ message: "Invalid action" }, { status: 400 });
     }
 
-    // Update secure request status
+    
     const updatedRequest = await prisma.secureRequest.update({
       where: { id: requestId },
       data: { status: action },
     });
 
-    // If approved, mark property as "Secured"
+   
     if (action === "Accepted") {
       await prisma.property.update({
         where: { id: updatedRequest.propertyId },

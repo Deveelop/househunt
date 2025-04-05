@@ -10,8 +10,6 @@ export async function POST(req: Request) {
     const { userName, userEmail, userContact, propertyId, ipAddress } = await req.json();
 
   
-
-    // Check for existing pending request
     const existingRequest = await prisma.secureRequest.findFirst({
       where: {
         propertyId,
@@ -27,7 +25,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create new secure request
+   
     const newRequest = await prisma.secureRequest.create({
       data: {
         userName,

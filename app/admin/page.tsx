@@ -1,19 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface SecureRequest {
   id: string;
   userName: string;
   userEmail: string;
   userContact: string;
-  property: { houseType: string; address: string; stateNig: string };
+  property: { houseType: string; address: string; stateNig: string; contact: string };
   status: string;
 }
 
 export default function AdminDashboard() {
   const [requests, setRequests] = useState<SecureRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    
+   
+    if (status === "unauthenticated" || (!session && status !== "loading")) {
+      router.push("/admin/login");
+    }
+
+    if (session && session.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      router.push("/admin");
+    }
+  }, [session, status, router]);
 
   useEffect(() => {
     async function fetchRequests() {
@@ -30,8 +46,10 @@ export default function AdminDashboard() {
       }
     }
 
-    fetchRequests();
-  }, []);
+    if (session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      fetchRequests();
+    }
+  }, [session]);
 
   async function handleAction(requestId: string, action: "Accepted" | "Rejected") {
     try {
@@ -53,7 +71,8 @@ export default function AdminDashboard() {
     }
   }
 
-  if (loading) return <p>Loading secure requests...</p>;
+  if (status === "loading" || loading) return <p>Loading secure requests...</p>;
+  if (status === "unauthenticated") return <p>You are not authorized to view this page. Redirected to login please...</p>;
 
   return (
     <div className="p-4">
@@ -78,7 +97,10 @@ export default function AdminDashboard() {
                 <td className="border p-2">{request.userName}</td>
                 <td className="border p-2">{request.userEmail}</td>
                 <td className="border p-2">{request.userContact}</td>
-                <td className="border p-2">{request.property.houseType} - {request.property.address}, {request.property.stateNig}</td>
+                <td className="border p-2">
+                  {request.property.houseType} - {request.property.address},{" "}
+                  {request.property.stateNig} - {request.property.contact}
+                </td>
                 <td className="border p-2">{request.status}</td>
                 <td className="border p-2">
                   {request.status === "Pending" && (
