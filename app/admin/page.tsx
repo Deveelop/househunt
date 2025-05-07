@@ -20,18 +20,14 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    
-   
     if (status === "unauthenticated" || (!session && status !== "loading")) {
       router.push("/admin/login");
     }
 
-    if (session && session.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    if (session && session.user?.email !== process.env.ADMIN_EMAIL) {
       router.push("/admin");
     }
-  }, [session, status, router]);
-
-  useEffect(() => {
+    
     async function fetchRequests() {
       try {
         const res = await fetch("/api/admin");
@@ -41,15 +37,17 @@ export default function AdminDashboard() {
         setRequests(data);
       } catch (error) {
         console.error("Error fetching requests:", error);
-      } finally {
-        setLoading(false);
       }
+        setLoading(false);
+     
     }
 
     if (session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
       fetchRequests();
     }
-  }, [session]);
+  }, [session, status, router]);
+
+  
 
   async function handleAction(requestId: string, action: "Accepted" | "Rejected") {
     try {
@@ -72,8 +70,7 @@ export default function AdminDashboard() {
   }
 
   if (status === "loading" || loading) return <p>Loading secure requests...</p>;
-  if (status === "unauthenticated") return <p>You are not authorized to view this page. Redirected to login please...</p>;
-
+ 
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Admin Dashboard - Secure Requests</h1>
