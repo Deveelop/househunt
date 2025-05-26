@@ -46,7 +46,8 @@ export default function PropertyDetails() {
         src={property.imageUrl}
         alt="Property Image"
         className=" bg-contain w-full"
-       fill
+        width={500}
+        height={300}
       />
       </div>
       <div className="sm:flex justify-between items-center">

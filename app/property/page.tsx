@@ -53,7 +53,8 @@ export default function AvailableProperties() {
                 src={house.imageUrl}
                 alt={house.houseType}
                 className="w-full h-40 object-cover rounded"
-              fill
+                width={500}
+                height={300}
               />
               <h2 className="text-xl font-semibold mt-2">{house.houseType}</h2>
               <p className="text-gray-700">{house.description}, {house.address} {house.stateNig}.  </p>
