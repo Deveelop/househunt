@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
       uploadStream.end(buffer);
     });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

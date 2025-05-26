@@ -14,7 +14,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     return NextResponse.json(property);
-  } catch (error) {
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars 
+  catch (error) {
     return NextResponse.json({ error: "Failed to fetch property" }, { status: 500 });
   }
 }

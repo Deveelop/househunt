@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import Image from "next/image";
 interface Property {
   id: string;
   houseType: string;
@@ -49,10 +49,11 @@ export default function AvailableProperties() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {properties.map((house) => (
             <div onClick={() => router.push(`/property/${house.id}`)} key={house.id} className="border p-4 rounded-lg shadow cursor-pointer">
-              <img
+              <Image
                 src={house.imageUrl}
                 alt={house.houseType}
                 className="w-full h-40 object-cover rounded"
+              fill
               />
               <h2 className="text-xl font-semibold mt-2">{house.houseType}</h2>
               <p className="text-gray-700">{house.description}, {house.address} {house.stateNig}.  </p>

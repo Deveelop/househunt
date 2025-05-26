@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-
+import Image from "next/image";
 interface Property {
   id: string;
   imageUrl: string;
@@ -42,10 +42,11 @@ export default function PropertyDetails() {
        <h1 className="text-xl font-bold mb-4"><span className="text-gray-500">Available Houses</span> - Houses Details</h1>
       <div className=" sm:w-1/2">
       <div  className="">
-      <img
+      <Image
         src={property.imageUrl}
         alt="Property Image"
         className=" bg-contain w-full"
+       fill
       />
       </div>
       <div className="sm:flex justify-between items-center">

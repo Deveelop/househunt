@@ -1,5 +1,5 @@
 "use client";
-import { FaArrowAltCircleRight, FaLocationArrow } from "react-icons/fa"
+import { FaArrowAltCircleRight} from "react-icons/fa"
 import { useState, useEffect } from "react";
 import {  useParams } from "next/navigation";
 

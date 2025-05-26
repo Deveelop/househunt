@@ -27,10 +27,11 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchStates();
   }, []);
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!formData.stateNig) return;
     fetchLgas();
@@ -198,7 +199,7 @@ export default function Home() {
 
       
         <h1 className="text-3xl md:text-5xl font-bold">Upload Available Apartment</h1>
-        <p className="mt-3 text-gray-300">Make someone's search easy today by uploading available apartment</p>
+        <p className="mt-3 text-gray-300">Make someone&apos;s search easy today by uploading available apartment</p>
         <div className="items-center justify-center gap-10 mt-12 p-6 bg-white shadow-lg rounded-lg mx-auto">
         <form onSubmit={handleSubmit} className="">
             {error && <p className="text-red-500">{error}</p>}

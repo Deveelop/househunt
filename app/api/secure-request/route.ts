@@ -41,7 +41,9 @@ export async function POST(req: Request) {
       { message: "Secure request submitted successfully", request: newRequest },
       { status: 200 }
     );
-  } catch (error) {
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars 
+  catch (error) {
     return NextResponse.json({ error: "Failed to submit request" }, { status: 500 });
   }
 }
