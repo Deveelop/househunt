@@ -40,38 +40,19 @@ export default function PropertyDetails() {
   return (
     <div className="p-4">
        <h1 className="text-xl font-bold mb-4"><span className="text-gray-500">Available Houses</span> - Houses Details</h1>
-      <div className=" flex">
+      <div className=" sm:w-1/2">
+      <div  className="">
       <img
         src={property.imageUrl}
         alt="Property Image"
-        className=""
+        className=" bg-contain w-full"
       />
-      <div className=" ml-4">
-      <h1 className="text-xl font-bold mb-4 border-b-2">{property.houseType}</h1>
-      <p className=" border-b-2">
+      </div>
+      <div className="sm:flex justify-between items-center">
+      <p className=" font-bold">{property.houseType}</p>
+      <p className="">
         <strong>Address: </strong>{property.description}, {property.address} {property.stateNig}.
       </p>
-      <div className="hidden sm:block">
-      <div className=" border-b-2 p-2 w-80"></div>
-      <div className=" border-b-2 p-2 w-72"></div>
-      <div className=" border-b-2 p-2 w-64"></div>
-      <div className=" border-b-2 p-2 w-60"></div>
-      <div className=" border-b-2 p-2 w-56"></div>
-      <div className=" border-b-2 p-2 w-52"></div>
-      <div className=" border-b-2 p-2 w-48"></div>
-      <div className=" border-b-2 p-2 w-44"></div>
-      <div className=" border-b-2 p-2 w-40"></div>
-      <div className=" border-b-2 p-2 w-36"></div>
-      <div className=" border-b-2 p-2 w-32"></div>
-      <div className=" border-b-2 p-2 w-28"></div>
-      <div className=" border-b-2 p-2 w-24"></div>
-      <div className=" border-b-2 p-2 w-20"></div>
-      <div className=" border-b-2 p-2 w-16"></div>
-      <div className=" border-b-2 p-2 w-14"></div>
-      <div className=" border-b-2 p-2 w-12"></div>
-      <div className=" border-b-2 p-2 w-11"></div>
-      <div className=" border-b-2 p-2 w-10"></div>
-     </div>
       </div>
       </div>
       <button

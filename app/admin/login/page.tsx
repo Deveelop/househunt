@@ -21,7 +21,8 @@ export default function AdminLogin() {
     if (result?.error) {
       setError("Invalid credentials");
     } else {
-      router.push("/admin"); 
+      router.push("/admin");
+       
     }
   };
 

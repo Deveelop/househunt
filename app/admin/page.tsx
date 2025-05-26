@@ -20,14 +20,21 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated" || (!session && status !== "loading")) {
-      router.push("/admin/login");
+    // Log session and status for debugging
+    console.log("Session:", session, "Status:", status);
+
+    if (status === "loading") return; // Wait for session to resolve
+
+    if (status === "unauthenticated") {
+      router.replace("/admin/login");
+      return;
     }
 
-    if (session && session.user?.email !== process.env.ADMIN_EMAIL) {
-      router.push("/admin");
+    if (session?.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      router.replace("/admin");
+      return;
     }
-    
+
     async function fetchRequests() {
       try {
         const res = await fetch("/api/admin");
@@ -37,17 +44,13 @@ export default function AdminDashboard() {
         setRequests(data);
       } catch (error) {
         console.error("Error fetching requests:", error);
-      }
+      } finally {
         setLoading(false);
-     
+      }
     }
 
-    if (session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-      fetchRequests();
-    }
+    fetchRequests();
   }, [session, status, router]);
-
-  
 
   async function handleAction(requestId: string, action: "Accepted" | "Rejected") {
     try {
@@ -69,58 +72,73 @@ export default function AdminDashboard() {
     }
   }
 
-  if (status === "loading" || loading) return <p>Loading secure requests...</p>;
- 
+  if (status === "loading" || loading) {
+    return <p className="p-4">Loading secure requests...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    return <p className="p-4">Redirecting to login...</p>;
+  }
+
+  if (session?.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    return <p className="p-4">Redirecting to admin page...</p>;
+  }
+
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Admin Dashboard - Secure Requests</h1>
+    <div className="p-4 max-w-full">
+      <h1 className="text-xl md:text-2xl font-bold mb-4 text-center sm:text-left">
+        Admin Dashboard - Secure Requests
+      </h1>
+
       {requests.length === 0 ? (
-        <p>No secure requests yet.</p>
+        <p className="text-center sm:text-left">No secure requests yet.</p>
       ) : (
-        <table className="w-full border">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2">User</th>
-              <th className="border p-2">Email</th>
-              <th className="border p-2">Phone</th>
-              <th className="border p-2">Property</th>
-              <th className="border p-2">Status</th>
-              <th className="border p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((request) => (
-              <tr key={request.id} className="border">
-                <td className="border p-2">{request.userName}</td>
-                <td className="border p-2">{request.userEmail}</td>
-                <td className="border p-2">{request.userContact}</td>
-                <td className="border p-2">
-                  {request.property.houseType} - {request.property.address},{" "}
-                  {request.property.stateNig} - {request.property.contact}
-                </td>
-                <td className="border p-2">{request.status}</td>
-                <td className="border p-2">
-                  {request.status === "Pending" && (
-                    <>
-                      <button
-                        className="bg-green-500 text-white px-2 py-1 mr-2"
-                        onClick={() => handleAction(request.id, "Accepted")}
-                      >
-                        Accept
-                      </button>
-                      <button
-                        className="bg-red-500 text-white px-2 py-1"
-                        onClick={() => handleAction(request.id, "Rejected")}
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border text-sm sm:text-base">
+            <thead>
+              <tr className="bg-gray-200 text-left">
+                <th className="border p-2">User</th>
+                <th className="border p-2">Email</th>
+                <th className="border p-2">Phone</th>
+                <th className="border p-2">Property</th>
+                <th className="border p-2">Status</th>
+                <th className="border p-2">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {requests.map((request) => (
+                <tr key={request.id} className="border hover:bg-gray-50">
+                  <td className="border p-2">{request.userName}</td>
+                  <td className="border p-2">{request.userEmail}</td>
+                  <td className="border p-2">{request.userContact}</td>
+                  <td className="border p-2">
+                    {request.property.houseType} - {request.property.address},{" "}
+                    {request.property.stateNig} - {request.property.contact}
+                  </td>
+                  <td className="border p-2">{request.status}</td>
+                  <td className="border p-2">
+                    {request.status === "Pending" && (
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                          onClick={() => handleAction(request.id, "Accepted")}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                          onClick={() => handleAction(request.id, "Rejected")}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

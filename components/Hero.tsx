@@ -203,7 +203,7 @@ export default function Home() {
         <form onSubmit={handleSubmit} className="">
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
-          <div className=" grid grid-cols-3  gap-4 w-full text-black">
+          <div className=" grid md:grid-cols-3  gap-4 w-full text-black">
           <select name="houseType" value={formData.houseType} onChange={handleInputChange} className="border p-2 w-full" required>
         <option value="">Select House Type</option>
         <option value="Single Room">Single Room</option>

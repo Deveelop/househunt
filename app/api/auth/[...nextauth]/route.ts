@@ -3,6 +3,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions, Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 
+interface CustomUser {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+}
+
+interface CustomSession extends Session {
+  user: CustomUser;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,14 +23,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const adminEmail = process.env.ADMIN_EMAIL;
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
 
         if (
           credentials?.email === adminEmail &&
           credentials?.password === adminPassword
         ) {
-          return { id: "1", name: "Admin", email: adminEmail };
+          return { id: "1", name: "Admin", email: adminEmail, role: "admin" };
         }
 
         return null;
@@ -29,20 +39,32 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 60,      
-    updateAge: 30,   
+    maxAge: 24 * 60 * 60, // 24 hours
+    updateAge: 6 * 60 * 60, // Update every 6 hours
   },
-
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user?.email === process.env.ADMIN_EMAIL) {
-        (session.user as any).role = "admin";
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as CustomUser).role;
       }
-      return session;
+      return token;
+    },
+    async session({ session, token }: { session: Session; token: JWT }) {
+      const customSession = session as CustomSession;
+      if (token.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        customSession.user = {
+          id: token.id as string,
+          name: session.user?.name || "Admin",
+          email: token.email as string,
+          role: token.role as string,
+        };
+      }
+      return customSession;
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: "/admin/login", // Aligned with AdminDashboard redirects
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
