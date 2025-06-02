@@ -140,10 +140,13 @@ export default function Home() {
         contact: "",
       });
       setImage(null);
-    } catch (error: any) {
-      console.error("Upload error:", error);
-      setError(error.message || "An error occurred while uploading.");
-    } finally {
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError("An unknown error occurred");
+  }
+} finally {
       setLoading(false);
     }
   };

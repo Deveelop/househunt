@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 
 
 export const metadata: Metadata = {
-  title: "House Hunt App",
+  title: "Houseek | Victor Abuka",
   description: "Created by Victor Abuka",
 };
 

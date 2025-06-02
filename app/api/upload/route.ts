@@ -4,7 +4,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+): Promise<Response> {   // <-- explicitly add this return type
   try {
     const formData = await req.formData();
     const file = formData.get("image") as File | null;
@@ -19,11 +21,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-   
     return new Promise((resolve) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: "housesdb" },
@@ -38,7 +38,6 @@ export async function POST(req: Request) {
             return;
           }
 
-          
           const property = await prisma.property.create({
             data: {
               houseType,
@@ -52,7 +51,10 @@ export async function POST(req: Request) {
           });
 
           resolve(
-            NextResponse.json({ message: "Property uploaded successfully", property }, { status: 201 })
+            NextResponse.json(
+              { message: "Property uploaded successfully", property },
+              { status: 201 }
+            )
           );
         }
       );
@@ -60,6 +62,7 @@ export async function POST(req: Request) {
       uploadStream.end(buffer);
     });
   } catch (error: unknown) {
-    return NextResponse.json({ error }, { status: 500 });
-  }
+  const message = error instanceof Error ? error.message : "Unknown error";
+  return NextResponse.json({ error: message }, { status: 500 });
+}
 }

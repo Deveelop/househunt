@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-export async function GET(req: Request){
+import { NextResponse, NextRequest } from "next/server";
+export async function GET(req: NextRequest) {
     try{
         const ip =
         req.headers.get("x-forwarded-for") || "Unknown IP";
